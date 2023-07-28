@@ -19,8 +19,8 @@ export default function App() {
   return (
     <ImageBackground source={backgroundImageRef} style={styles.backgroundImage}>
       <View style={styles.container}>
-        {/* <LoginScreen /> */}
-        <RegistrationScreen />
+        <LoginScreen />
+        {/* <RegistrationScreen /> */}
       </View>
     </ImageBackground>
   );

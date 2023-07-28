@@ -1,49 +1,95 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert
 } from "react-native";
 import AddIcon from "../icons/AddIcon";
 
 const RegistrationScreen = () => {
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+
+  const handleFormSubmit = () => {
+    if (login === '' || login.length < 3) {
+      Alert.alert('Login should be longer then 3 symbols')
+    }
+    if (email === "" || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      Alert.alert("Please insert a valid email");
+    }
+    if (password === '' || password.length < 7) {
+      Alert.alert('Your password should consist at least 7 characters')
+    }
+    console.log(`Login: ${login}, email: ${email}, password: ${password}`)
+    setLogin("")
+    setEmail("");
+    setPassword("");
+  }
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
-    <View style={styles.form}>
-      <View style={styles.image}>
-        <TouchableOpacity style={styles.addBtn}>
-          <AddIcon style={styles.icon} />
-        </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.form}>
+        <View style={styles.image}>
+          <TouchableOpacity style={styles.addBtn}>
+            <AddIcon style={styles.icon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.title}>Реєстрація</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
+          <TextInput
+            style={styles.input}
+            placeholder="Логін"
+            placeholderTextColor="#BDBDBD"
+            value={login}
+            onChangeText={setLogin}
+            // autoComplete="name"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Адреса електронної пошти"
+            placeholderTextColor="#BDBDBD"
+            value={email}
+            onChangeText={setEmail}
+            // autoComplete='email'
+          />
+          <View>
+            <TextInput
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Пароль"
+              placeholderTextColor="#BDBDBD"
+              secureTextEntry={showPassword}
+              value={password}
+              onChangeText={setPassword}
+              // autoComplete="password"
+            ></TextInput>
+            <TouchableOpacity style={styles.showPasswordLink} onPress={toggleShowPassword}>
+              <Text style={styles.showPasswordText}>Показати</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.registerButton} onPress={handleFormSubmit}>
+            <Text style={styles.textButton}>Зареєстуватися</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.haveAccountLink}>Вже є акаунт? Увійти</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
-      <Text style={styles.title}>Реєстрація</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Логін"
-        placeholderTextColor="#BDBDBD"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Адреса електронної пошти"
-        placeholderTextColor="#BDBDBD"
-      />
-      <View>
-        <TextInput
-          style={[styles.input, styles.passwordInput]}
-          placeholder="Пароль"
-          placeholderTextColor="#BDBDBD"
-          secureTextEntry={true}
-        ></TextInput>
-        <TouchableOpacity style={styles.showPasswordLink}>
-          <Text style={styles.showPasswordText}>Показати</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.registerButton}>
-        <Text style={styles.textButton}>Зареєстуватися</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.haveAccountLink}>Вже є акаунт? Увійти</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

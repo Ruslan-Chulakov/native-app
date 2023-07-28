@@ -1,37 +1,87 @@
-import { View, Text, StyleSheet, TouchableOpacity,TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from "react-native";
 
 const LoginScreen = () => {
-    return (
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+
+  const handleFormSubmit = () => {
+    if (email === "" || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      Alert.alert("Please insert a valid email");
+    }
+    if (password === "" || password.length < 7) {
+      Alert.alert("Your password should consist at least 7 characters");
+    }
+    console.log(`Email: ${email}, password: ${password}`);
+    setEmail("");
+    setPassword("");
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.form}>
         <Text style={styles.title}>Увійти</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Адреса електронної пошти"
-          placeholderTextColor="#BDBDBD"
-        />
-        <View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
           <TextInput
-            style={[styles.input, styles.passwordInput]}
-            placeholder="Пароль"
+            style={styles.input}
+            placeholder="Адреса електронної пошти"
             placeholderTextColor="#BDBDBD"
-            secureTextEntry={true}
-          ></TextInput>
-          <TouchableOpacity style={styles.showPasswordLink}>
-            <Text style={styles.showPasswordText}>Показати</Text>
+            value={email}
+            onChangeText={setEmail}
+          />
+          <View>
+            <TextInput
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Пароль"
+              placeholderTextColor="#BDBDBD"
+              secureTextEntry={showPassword}
+              value={password}
+              onChangeText={setPassword}
+            ></TextInput>
+            <TouchableOpacity
+              style={styles.showPasswordLink}
+              onPress={toggleShowPassword}
+            >
+              <Text style={styles.showPasswordText}>Показати</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleFormSubmit}
+          >
+            <Text style={styles.textButton}>Увійти</Text>
           </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.textButton}>Увійти</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.noAccountLink}>
-          <Text style={styles.registrationLinkText}>Немає акаунту?</Text>
-          <Text style={[styles.registrationLinkText, styles.registrationLink]}>
-            Зареєструватися
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.noAccountLink}>
+            <Text style={styles.registrationLinkText}>Немає акаунту?</Text>
+            <Text
+              style={[styles.registrationLinkText, styles.registrationLink]}
+            >
+              Зареєструватися
+            </Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </View>
-    );
-}
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   form: {
@@ -102,8 +152,8 @@ const styles = StyleSheet.create({
     color: "#1B4371",
   },
   registrationLink: {
-    textDecorationLine: 'underline',
-  }
+    textDecorationLine: "underline",
+  },
 });
 
 export default LoginScreen;
